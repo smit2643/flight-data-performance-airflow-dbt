@@ -1,0 +1,143 @@
+version: 2
+
+models:
+
+  # ======================================================================
+  # DIM AIRLINES
+  # ======================================================================
+  - name: dim_airlines
+    description: "Clean airline dimension containing carrier metadata."
+
+    tests:
+      - unique:
+          column_name: airline_sk
+      - not_null:
+          column_name: airline_sk
+
+    columns:
+      - name: airline_id
+        description: "Original airline identifier."
+        tests:
+          - not_null
+
+      - name: airline_sk
+        description: "Surrogate key."
+
+      - name: airline_name
+        description: "Cleaned airline name."
+        tests:
+          - not_null
+
+      - name: alias
+        description: "Alias."
+
+      - name: iata
+        description: "IATA code."
+
+      - name: icao
+        description: "ICAO code."
+
+      - name: callsign
+        description: "Airline callsign."
+
+      - name: country
+        description: "Country."
+
+      - name: is_active
+        description: "Active airline indicator."
+
+  # ======================================================================
+  # DIM AIRPORTS
+  # ======================================================================
+  - name: dim_airports
+    description: "Clean airport dimension."
+
+    tests:
+      - unique:
+          column_name: airport_sk
+      - not_null:
+          column_name: airport_sk
+
+    columns:
+      - name: airport_id
+        tests:
+          - not_null
+
+      - name: airport_name
+        tests:
+          - not_null
+
+      - name: city
+
+      - name: iata_code
+        tests:
+          - not_null
+
+      - name: latitude
+        tests:
+          - not_null
+
+      - name: longitude
+        tests:
+          - not_null
+
+  # ======================================================================
+  # DIM WEATHER
+  # ======================================================================
+  - name: dim_weather
+    description: "Hourly weather data."
+
+    tests:
+      - not_null:
+          column_name: weather_sk
+
+    columns:
+      - name: station
+        tests:
+          - not_null
+
+      - name: observation_ts
+        tests:
+          - not_null
+
+      - name: temperature_c
+      - name: wind_speed_mps
+      - name: pressure_hpa
+
+  # ======================================================================
+  # FACT FLIGHTS
+  # ======================================================================
+  - name: fact_flights
+    description: "Flight fact combining BTS, airports, weather."
+
+    tests:
+      - not_null:
+          column_name: flight_sk
+
+    columns:
+
+      # -------- REQUIRED FIELDS --------
+      - name: flight_date
+        tests:
+          - not_null
+
+      - name: marketing_iata
+        tests:
+          - not_null
+
+      - name: dep_time
+
+      - name: origin
+        tests:
+          - not_null
+
+      - name: dest
+        tests:
+          - not_null
+
+      # -------- WEATHER FIELDS --------
+      - name: temperature_c
+      - name: wind_speed_mps
+      - name: wind_direction_deg
+      - name: visibility_m
+      - name: pressure_hpa

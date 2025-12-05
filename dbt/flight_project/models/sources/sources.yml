@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    database: FLIGHT
+    schema: RAW
+    tables:
+      - name: AIRLINES_RAW
+      - name: AIRPORTS_RAW
+      - name: WEATHER_RAW
+      - name: BTS_RAW

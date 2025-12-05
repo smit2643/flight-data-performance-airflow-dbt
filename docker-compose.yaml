@@ -1,0 +1,92 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 5s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 5
+
+  airflow-webserver:
+    build: .
+    depends_on:
+      airflow-scheduler:
+        condition: service_started
+    ports:
+      - "8081:8080"
+    env_file: .env
+    command: "webserver"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./plugins:/opt/airflow/plugins
+      - ./logs:/opt/airflow/logs
+      - ./dbt/flight_project:/opt/airflow/dbt/flight_project
+      - ~/.dbt:/home/airflow/.dbt
+
+
+
+  airflow-scheduler:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    command: "scheduler"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./plugins:/opt/airflow/plugins
+      - ./logs:/opt/airflow/logs
+      - ./dbt/flight_project:/opt/airflow/dbt/flight_project
+      - ~/.dbt:/home/airflow/.dbt
+
+
+  airflow-init:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    entrypoint: /bin/bash
+    command: "-c 'airflow db init && airflow users create --username airflow --password airflow --firstname admin --lastname user --role Admin --email admin@example.com'"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./plugins:/opt/airflow/plugins
+      - ./logs:/opt/airflow/logs
+      - ./dbt:/opt/airflow/dbt
+      - ~/.dbt:/home/airflow/.dbt
+
+  streamlit:
+    image: python:3.10
+    container_name: streamlit_app
+    working_dir: /app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./streamlit:/app
+      - ~/.dbt:/root/.dbt        
+    command: >
+      bash -c "pip install streamlit snowflake-connector-python &&
+               streamlit run dashboard.py --server.address=0.0.0.0"
+
+      
+
+volumes:
+  postgres-db-volume:
