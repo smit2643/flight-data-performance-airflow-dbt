@@ -113,8 +113,8 @@ flight_project/
 │       ├── macros/
 │       ├── seeds/
 │       ├── snapshots/
-│       ├── logs/
-│       ├── target/
+│       ├── logs/  (NOT in Git)
+│       ├── target/ 
 │       ├── tests/
 │       ├── dbt_project.yml
 │       └── packages.yml
@@ -143,8 +143,8 @@ flight_project/
 ## **1️⃣ Clone this repository**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/flight-data-platform.git
-cd flight-data-platform
+git clone https://github.com/YOUR_USERNAME/flight-data-performance-airflow-dbt.git
+cd flight-data-performance-airflow-dbt
 ```
 
 ---
@@ -154,7 +154,7 @@ cd flight-data-platform
 ### Start containers:
 
 ```bash
-cd airflow
+cd flight_project
 docker-compose up --build -d
 ```
 
