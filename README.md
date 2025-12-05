@@ -1,10 +1,3 @@
-Got you — you want an **eye-catching, professional, open-source-ready README** for GitHub, not a dry technical doc.
-
-Here is a **beautifully formatted, clean, modern README.md** that explains the architecture, setup, technologies, environment, and how to run everything (Airflow + Snowflake + dbt + Streamlit).
-It looks like a *real production-grade open-source project README*.
-
----
-
 # ✈️ **Flight Data Engineering Platform**
 
 ### **An End-to-End Modern Data Pipeline (Airflow + Snowflake + dbt + Streamlit)**
@@ -12,10 +5,14 @@ It looks like a *real production-grade open-source project README*.
 ![Architecture Banner](https://dummyimage.com/1200x280/001122/ffffff\&text=Flight+Data+Pipeline+-+Airflow+Snowflake+dbt+Streamlit)
 
 ---
+## 🌟 **Streamlite Dashboard** 
+
+https://flight-data-performance-airflow-dbt-mw6pkagwhhqyxmtplqjvqe.streamlit.app/
+
 
 ## 🌟 **Overview**
 
-This repository contains a complete **end-to-end data engineering project**, built with a production-ready modern data stack:
+This repository contains a complete **end-to-end data engineering project**, built with a modern data stack:
 
 | Layer              | Technology            | Purpose                                                            |
 | ------------------ | --------------------- | ------------------------------------------------------------------ |
@@ -81,19 +78,18 @@ This project is built exactly like a **real enterprise pipeline** and is designe
 ### ✅ dbt Transformation
 
 * RAW → STAGING
-* STAGING → MARTS
+* STAGING → MARTS/MARTS_JFK
 * Includes:
 
   * Airline On-Time Ranking
   * Airport Daily Performance
   * Hourly Delay Distribution
-  * Weather Delay Impact
+  * Weather Delay Impact (JFK AIRPORT)
 
 ### ✅ Streamlit Dashboard
 
 * Schema & table selector
 * Pagination (250 rows per batch)
-* Auto-refresh (ttl=300s)
 * Interactive charts using Altair
 * Supports STAGING_MARTS and STAGING_MARTS_JFK
 
@@ -104,36 +100,39 @@ This project is built exactly like a **real enterprise pipeline** and is designe
 ```
 flight_project/
 │
-├── airflow/
-│   ├── dags/
-│   │   ├── flight_pipeline.py
-│   │   ├── upload_to_s3.py
-│   │   └── dbt_runner.py
-│   ├── Dockerfile
-│   ├── docker-compose.yaml
-│   ├── requirements.txt
-│   ├── logs/
-│   └── plugins/
+├── dags/
+│   ├── flight_pipeline.py
+│   ├── upload_to_s3.py
+│   └── dbt_runner.py
 │
 ├── dbt/
+│   ├── logs/
 │   └── flight_project/
+│       ├── analyses/
 │       ├── models/
+│       ├── macros/
 │       ├── seeds/
 │       ├── snapshots/
 │       ├── logs/
+│       ├── target/
+│       ├── tests/
 │       ├── dbt_project.yml
 │       └── packages.yml
 │
+├── logs/ (NOT in Git)
+├── plugins/ (NOT in Git)
+│
 ├── streamlit/
-│   ├── streamlit_app.py
+│   ├── dashboard.py
 │   └── .streamlit/secrets.toml (NOT in Git)
 │
-├── sql/
-│   ├── create_tables.sql
-│   ├── create_stages.sql
-│   ├── initial_load.sql
-│
+├── .env (NOT in Git)
 ├── .gitignore
+├── 01_db_setup.sql
+├── 02_create_load_tables.sql
+├── docker-compose.yaml
+├── Dockerfile
+├── requirements.txt
 └── README.md
 ```
 
@@ -239,7 +238,7 @@ role = "ACCOUNTADMIN"
 
 ```bash
 cd streamlit
-streamlit run streamlit_app.py
+streamlit run dashboard.py
 ```
 
 ---
@@ -266,44 +265,6 @@ Just upload your repo → add secrets → deploy.
 
 ---
 
-# 📦 Requirements
-
-`requirements.txt`
-
-```
-streamlit
-pandas
-plotly
-altair
-snowflake-connector-python
-apache-airflow-providers-snowflake
-boto3
-```
-
----
-
-# 🔒 **gitignore**
-
-```
-dbt/flight_project/target/
-dbt/.venv/
-dbt/flight_project/dbt_packages/
-dbt/flight_project/dbt_internal_packages/
-dbt/flight_project/logs/
-dbt/flight_project/.dbt/
-dbt/logs/
-
-dags/__pycache__/
-logs/
-__pycache__/
-
-streamlit/__pycache__/
-streamlit/.streamlit/secrets.toml
-streamlit/.streamlit/
-streamlit/.venv/
-
-.env
-```
 
 ---
 
@@ -318,10 +279,4 @@ This repository demonstrates a **full production-grade data pipeline**:
 ✔ Interactive Streamlit dashboard
 ✔ Real-world architecture
 
-Perfect for:
-
-* Portfolio projects
-* Interviews
-* Learning Data Engineering
-* Real deployment in small teams
 
